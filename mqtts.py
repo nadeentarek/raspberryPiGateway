@@ -6,9 +6,10 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("#")
 
 def on_message(client, userdata, msg):
+    print("received message =",str(msg.payload.decode("utf-8")))
     public_client.publish("siloAnomaly/1", msg.payload)
 
-broker_address="0.0.0.0"
+broker_address="192.168.1.126"
 
 public_broker_address="broker.hivemq.com" #use external broker
 
@@ -21,10 +22,10 @@ def main():
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect(broker_address, 1883, 60)
+    public_client.connect(public_broker_address, 1883, 60)
     client.loop_forever()
 
-    public_client.connect(public_broker_address, 1883, 60)
-    public_client.loop_forever()
+    #public_client.loop_forever()
     
 if __name__ == '__main__':
     main()
